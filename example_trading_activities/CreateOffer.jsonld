@@ -2,27 +2,33 @@
     "type": "Create",
     "actor": {
         "type": "Person",
-        "name": "CSDUMMI"
+        "name": "CSDUMMI",
+        "id": "https://csdummi"
     },
     "object": {
-        "type": "Offer",
-        "price": 500,
-        "priceCurrency": "EUR"
-    },
-    "@context": [
-        "https://www.w3.org/ns/activitystreams",
-        {
-            "blurhash": "toot:blurhash",
-            "Emoji": "toot:Emoji",
-            "focalPoint": {
-                "@container": "@list",
-                "@id": "toot:focalPoint"
-            },
-            "Hashtag": "as:Hashtag",
-            "manuallyApprovesFollowers": "as:manuallyApprovesFollowers",
-            "sensitive": "as:sensitive",
-            "toot": "http://joinmastodon.org/ns#",
-            "votersCount": "toot:votersCount"
+        "type": "Invoice",
+        "accountID": "DE...",
+        "customer": {
+            "type": "Person",
+            "name": "Orangerot",
+            "id": "https://orangerot"
+        },
+        "paymentMethod": "http://purl.org/goodrelations/v1#DirectDebit",
+        "totalPaymentDue": {
+            "type": "MonetaryAmount",
+            "currency" : "EUR",
+            "value": 500
+        },
+        "provider": "https://csdummi",
+        "acceptedOffer": {
+            "type": "Offer",
+            "acceptedPaymentMethod": "http://purl.org/goodrelations/v1#DirectDebit",
+            "availability": "LimitedAvailability",
+            "price": 500,
+            "priceCurrency": "EUR",
+            "offeredBy": "https://csdummi",
+            "name": "PC",
+            "description": "Personal Computer with multicore Intel CPU"
         }
-    ]
+    }
 }

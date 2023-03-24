@@ -553,37 +553,13 @@ schemas = {
         "documentUrl": "http://mule.org/ns",
         "contextUrl": None,
         "document": {
-            "schema" : "https://schema.org/",
-            "Product": "schema:Product",
-            "Service": "schema:Service",
-            "Offer": "schema:Offer",
-            "Order": "schema:Order",
-            "Invoice": "schema:Invoice",
-
-            # Thing Attributes
-            "name": "schema:name",
-            "url": "schema:url",
-            "image": "schema:image",
-            "description": "schema:description",
-
-            # Product Attributes
-
-            "productID": "schema:ProductID",
-            "productionDate": "schema:productionDate",
-
-            # Service Attributes
-            "serviceType": "schema:serviceType",
-            "termsOfService": "schema:termsOfService",
-            "serviceOutput": "schema:serviceOutput",
-            "provider": "schema:provider",
-
-            # Offer Attributes
-            "acceptedPaymentMethod": "schema:acceptedPaymentMethod",
-            "availability": "schema:availability",
-            "availabilityEnds": "schema:availabilityEnds",
-            "price": "schema:price",
-            "priceCurrency": "schema:prcieCurrency",
-            "seller": "schema:seller"
+            "@context": {
+                "schema" : "https://schema.org",
+                "Product": "schema:Product",
+                "Service": "schema:Service",
+                "Offer": "schema:Offer",
+                "Invoice": "schema:Invoice",
+            }
         }
     }
 }
@@ -643,7 +619,7 @@ def canonicalise(json_data: dict, include_security: bool = False) -> dict:
             "toot": "http://joinmastodon.org/ns#",
             "votersCount": "toot:votersCount",
         },
-        "mule.org/ns"
+        schemas["mule.org/ns"]
     ]
     if include_security:
         context.append("https://w3id.org/security/v1")
