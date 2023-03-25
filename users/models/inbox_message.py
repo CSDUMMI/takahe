@@ -42,6 +42,8 @@ class InboxMessageStates(StateGraph):
                     case unknown:
                         if unknown in Post.Types.names:
                             await sync_to_async(Post.handle_create_ap)(instance.message)
+                        elif unknown in Trading.Types.names:
+                            await sync_to_async(Trading.handle_create_ap)(instance.message)
                         else:
                             raise ValueError(
                                 f"Cannot handle activity of type create.{unknown}"

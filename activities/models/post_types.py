@@ -1,9 +1,11 @@
 import json
-from datetime import datetime
+from datetime import datetime, timedelta
 from typing import Literal
 
 from django.utils import timezone
 from pydantic import BaseModel, Field
+from enum import Enum
+from decimal import Decimal
 
 from core.ld import format_ld_date
 
@@ -102,7 +104,130 @@ class ArticleData(BasePostDataType):
         extra = "ignore"
 
 
-PostDataType = QuestionData | ArticleData
+# TRADING
+
+class ProductData(BasePostDataType):
+    type: Literal["Product"]
+    productID: str
+    name: str
+    category: str
+
+
+class DayOfWeek(Enum):
+    Friday = "https://schema.org/Friday"
+    Monday = "https://schema.org/Monday"
+    PublicHolidays = "https://schema.org/PublicHolidays"
+    Saturday = "https://schema.org/Saturday"
+    Sunday = "https://schema.org/Sunday"
+    Thursday = "https://schema.org/Thursday"
+    Tuesday = "https://schema.org/Tuesday"
+    Wednesday = "https://schema.org/Wednesday"
+
+
+class OpeningHoursSpecification(BaseModel):
+    closes: str | None
+    daysOfWeek: DayOfWeek
+    opens: str | None
+
+
+class ServiceData(BasePostDataType):
+    type: Literal["Service"]
+    name: str | None
+    hoursAvailable: OpeningHoursSpecification | None
+    termsOfService: str | None
+    provider: str
+    category: str
+    name: str
+
+
+class PaymentMethod(Enum):
+    """PaymentMethod enumeration based on schema.org/PaymentMethod
+    """
+    ByBankTransferInAdvance = "http://purl.org/goodrelations/v1#ByBankTransferInAdvance"
+    ByInvoice = "http://purl.org/goodrelations/v1#ByInvoice"
+    Cash = "http://purl.org/goodrelations/v1#Cash"
+    CheckInAdvance = "http://purl.org/goodrelations/v1#CheckInAdvance"
+    COD = "http://purl.org/goodrelations/v1#COD"
+    DirectDebit = "http://purl.org/goodrelations/v1#DirectDebit"
+    GoogleCheckout = "http://purl.org/goodrelations/v1#GoogleCheckout"
+    PayPal = "http://purl.org/goodrelations/v1#PayPal"
+    PaySwarm = "http://purl.org/goodrelations/v1#PaySwarm"
+
+
+class ItemAvailability(Enum):
+    """ItemAvailability accoding to schema.org/ItemAvailability
+    """
+    BackOrder = "https://schema.org/BackOrder"
+    Discontinued = "https://schema.org/Discontinued"
+    InStock = "https://schema.org/InStock"
+    InStoreOnly = "https://schema.org/InStoreOnly"
+    LimitedAvailability = "https://schema.org/LimitedAvailability"
+    OnlineOnly = "https://schema.org/OnlineOnly"
+    OutOfStock = "https://schema.org/OutOfStock"
+    PreOrder = "https://schema.org/PreOrder"
+    PreSale = "https://schema.org/PreSale"
+    SoldOut = "https://schema.org/SoldOut"
+
+
+class WarrantyPromise(BaseModel):
+    """Based on schema.org/WarrantyPromise
+    """
+    durationOfWarranty: timedelta
+
+class OfferData(BasePostDataType):
+    type: Literal["Offer"]
+    acceptedPaymentMethod: PaymentMethod
+    availability: ItemAvailability | None
+    availabilityStarts: datetime | None
+    availabilityEnds: datetime | None
+
+    deliveryLeadTime: timedelta | None
+
+    itemOffered:  str # ID of the Product or Service offered
+    offeredBy: str # ID of the identity offering
+
+    price: Decimal
+    priceCurrency: str # Follow ISO 4217, where applicable.
+    priceValidUntil : datetime | None
+
+    warranty: WarrantyPromise | None # ID of the WarrantyPromise object
+
+
+class PaymentStatusType(Enum):
+    PaymentAutomaticallyApplied = "https://schema.org/PaymentAutomaticallyApplied"
+    PaymentComplete = "https://schema.org/PaymentComplete"
+    PaymentDeclined = "https://schema.org/PaymentDeclined"
+    PaymentDue = "https://schema.org/PaymentDue"
+    PaymentPastDue = "https://schema.org/PaymentPastDue"
+
+
+class MonetaryAmount(BaseModel):
+    """Subset of schema.org/MonetaryAmount
+    """
+    currency: str
+    value: Decimal
+
+
+class InvoiceData(BasePostDataType):
+    """Subset of attributes from schema.org/Invoice
+    """
+    type: Literal["Invoice"]
+
+    accountId: str # ID of the Person invoiced
+    customer: str # ID of the Person receiving the Product/Service
+    provider: str # ID of the seller
+
+    billingPeriod: str | None
+    confirmationNumber: str | None
+
+    paymentMethod: PaymentMethod
+    paymentDueDate: datetime | None
+    paymentStatus: PaymentStatusType
+    totalPaymentDue: MonetaryAmount
+    scheduledPaymentDate: datetime | None
+
+
+PostDataType = QuestionData | ArticleData | ProductData | ServiceData | OfferData | InvoiceData
 
 
 class PostTypeData(BaseModel):

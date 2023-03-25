@@ -214,6 +214,7 @@ class Post(StatorModel):
         followers = 2
         mentioned = 3
 
+
     class Types(models.TextChoices):
         article = "Article"
         audio = "Audio"
@@ -223,6 +224,15 @@ class Post(StatorModel):
         page = "Page"
         question = "Question"
         video = "Video"
+
+        # Trading Types
+        product = "Product"
+        service = "Service"
+        offer = "Offer"
+        invoice = "Invoice"
+
+
+    TradingTypes = { Types.product, Types.service, Types.offer, Types.invoice }
 
     id = models.BigIntegerField(primary_key=True, default=Snowflake.generate_post)
 
@@ -641,6 +651,11 @@ class Post(StatorModel):
             value["toot:votersCount"] = self.type_data.voter_count
             if self.type_data.end_time:
                 value["endTime"] = format_ld_date(self.type_data.end_time)
+
+        if self.type.value in Post.TradingTypes:
+            for field in self.type_data.__fields_set__:
+                value[field] = getattr(self.type_data, field)
+
         if self.summary:
             value["summary"] = self.summary
         if self.in_reply_to:
@@ -843,7 +858,7 @@ class Post(StatorModel):
                 raise cls.DoesNotExist(f"No post with ID {data['id']}", data)
         if update or created:
             post.type = data["type"]
-            if post.type in (cls.Types.article, cls.Types.question):
+            if post.type in (cls.Types.article, cls.Types.question) or post.type in cls.TradingTypes:
                 post.type_data = PostTypeData(__root__=data).__root__
             post.content = get_value_or_map(data, "content", "contentMap")
             post.summary = data.get("summary")
