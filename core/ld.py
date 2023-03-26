@@ -546,21 +546,6 @@ schemas = {
                 "language": "sc:inLanguage",
             }
         },
-    },
-
-    "mule.org/ns": {
-        "contentType": "application/ld+json",
-        "documentUrl": "http://mule.org/ns",
-        "contextUrl": None,
-        "document": {
-            "@context": {
-                "schema" : "https://schema.org",
-                "Product": "schema:Product",
-                "Service": "schema:Service",
-                "Offer": "schema:Offer",
-                "Invoice": "schema:Invoice",
-            }
-        }
     }
 }
 

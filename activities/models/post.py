@@ -24,6 +24,10 @@ from activities.models.post_types import (
     PostTypeDataDecoder,
     PostTypeDataEncoder,
     QuestionData,
+    ProductData,
+    ServiceData,
+    OfferData,
+    InvoiceData
 )
 from core.exceptions import capture_message
 from core.html import ContentRenderer, FediverseHtmlParser
@@ -480,6 +484,7 @@ class Post(StatorModel):
         reply_to: Optional["Post"] = None,
         attachments: list | None = None,
         question: dict | None = None,
+        type_data: dict | None = None
     ) -> "Post":
         with transaction.atomic():
             # Find mentions in this post
@@ -515,6 +520,10 @@ class Post(StatorModel):
             if question:
                 post.type = question["type"]
                 post.type_data = PostTypeData(__root__=question).__root__
+            if type_data:
+                post.type = type_data["type"]
+                post.type_data = PostTypeData(__root__=type_data).__root__
+
             post.save()
             # Recalculate parent stats for replies
             if reply_to:
@@ -1144,6 +1153,8 @@ class Post(StatorModel):
             "poll": self.type_data.to_mastodon_json(self, identity)
             if isinstance(self.type_data, QuestionData)
             else None,
+            "trading": self.type_data.dict() if isinstance(self.type_data, (ProductData, ServiceData, OfferData, InvoiceData)) else None,
+            "is_trading": True,
             "card": None,
             "language": None,
             "text": self.safe_content_remote(),

@@ -48,6 +48,7 @@ class PostStatusSchema(Schema):
     scheduled_at: str | None = None
     media_ids: list[str] = []
     poll: PostPollSchema | None = None
+    trading: dict | None = None
 
 
 class EditStatusSchema(Schema):

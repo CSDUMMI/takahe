@@ -112,7 +112,6 @@ class ProductData(BasePostDataType):
     name: str
     category: str
 
-
 class DayOfWeek(Enum):
     Friday = "https://schema.org/Friday"
     Monday = "https://schema.org/Monday"
@@ -137,7 +136,6 @@ class ServiceData(BasePostDataType):
     termsOfService: str | None
     provider: str
     category: str
-    name: str
 
 
 class PaymentMethod(Enum):
