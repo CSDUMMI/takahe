@@ -17,6 +17,7 @@ class AppsForm(forms.Form):
     scopes = forms.MultipleChoiceField(choices=(("read", "read"), ("write", "write")))
 
 
+@method_decorator(identity_required, name="dispatch")
 class AddAppsPage(FormView):
     """Shows a page of the user's apps
     And allows creating new apps and access tokens.

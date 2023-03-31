@@ -1,8 +1,11 @@
+from django.utils.decorators import method_decorator
 from django.views.generic.list import ListView
 
 from api.models.token import Token
+from users.decorators import identity_required
 
 
+@method_decorator(identity_required, name="dispatch")
 class AppsPage(ListView):
     model = Token
     template_name = "settings/apps.html"
