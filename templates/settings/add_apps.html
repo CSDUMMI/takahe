@@ -1,0 +1,13 @@
+{% extends "settings/base.html" %}
+
+{% block subtitle %}Add an App{% endblock %}
+
+{% block content %}
+    <form action="/settings/apps/add" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <div class="buttons">
+            <button>Add Application</button>
+        </div>
+    </form>
+{% endblock %}

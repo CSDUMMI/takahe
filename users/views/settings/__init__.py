@@ -2,6 +2,8 @@ from django.utils.decorators import method_decorator
 from django.views.generic import RedirectView
 
 from users.decorators import identity_required
+from users.views.settings.add_apps_page import AddAppsPage
+from users.views.settings.apps_page import AppsPage
 from users.views.settings.import_export import (  # noqa
     CsvFollowers,
     CsvFollowing,
